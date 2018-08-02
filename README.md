@@ -3,8 +3,8 @@ Single-page application built using React, featuring a map of neighborhood. It d
 
 ## How To Install
 * download or clone project
-* install all project dependencies with npm install
-* start the development server with npm start
+* install all project dependencies with: npm install
+* start the development server with: npm start
 * if necessary run: npm install --save react-router-dom
 
 A new browser window open automatically displaying the app.  If it doesn't, navigate to [http://localhost:3000/](http://localhost:3000/) in your browser
