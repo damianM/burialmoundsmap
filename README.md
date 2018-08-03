@@ -13,7 +13,7 @@ A new browser window open automatically displaying the app.  If it doesn't, navi
 ## How to run the project in Production Mode
 
 * Build the production ready optimised code: `npm run serve`
-* And then visit localhost:5000
+* And then visit [http://localhost:5000/](http://localhost:5000/)
 
 ## Important
 This application uses API's from Google maps and Foursquare, and developer free plans are only limited to a certain number of requests per day so you may experience not being able to load content. Note: The service worker is only functional in production mode (try it on the hosted site).
