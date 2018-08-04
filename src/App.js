@@ -50,7 +50,14 @@ class App extends Component {
   componentDidMount() {
     window.initMap = this.initMap;
     loadMapJS('https://maps.googleapis.com/maps/api/js?key=AIzaSyAHg-9aLCKW1W_xTBi0W1Y3t-D6vVT2Kjc&callback=initMap')
+      // Global function for Google map error handling
+      window.gm_authFailure = this.gm_authFailure;
   }
+    
+      // Global function for Google map error handling
+    gm_authFailure() {
+      window.alert("Google Maps failed to Load")
+    }
 
   initMap() {
     var self = this;
@@ -127,7 +134,7 @@ class App extends Component {
     var self = this;
     var clientId = "OHNKTJQFJQ2GEYEKI1KLZUE3F3MVQCRUCP11BMB4WSABJEW0";
     var clientSecret = "RZRDJKXKYBKIQJBH1OGDAKCXMOE1FVUGW2A4ZX52ICV44JWZ";
-    var url = "https://api.foursquare.com/v2/venues/search?client_id=" + clientId + "&client_secret=" + clientSecret + "&v=20130815&ll=" + marker.getPosition().lat() + "," + marker.getPosition().lng() + "&limit=1";
+    var url = "https://api.foursquare.com/v2/venues/search?client_id=" + clientId + "&client_secret=" + clientSecret + "&v=20180323&ll=" + marker.getPosition().lat() + "," + marker.getPosition().lng() + "&limit=1";
     fetch(url)
       .then(
         function (response) {
@@ -137,9 +144,11 @@ class App extends Component {
           }
           response.json().then(function (data) {
             var locData = data.response.venues[0];
+            var locName = '<b>Name: </b>' + locData.name + '<br>';
+            var locAddress = '<b>Address: </b>' + locData.location.formattedAddress + '<br>';
+            var locVerified = '<b>Is verified: </b>' + locData.verified + '<br>';
             var findMore = '<a href="https://foursquare.com/v/' + locData.id + '" target="_blank">Find more on Foursquare</a>'
-            self.state.infowindow.setContent(findMore);
-
+            self.state.infowindow.setContent(locName + locAddress + locVerified  + findMore);
           });
         }
       )
@@ -177,7 +186,7 @@ function loadMapJS(src) {
   script.src = src;
   script.async = true;
   script.onerror = function () {
-    document.write("Can't load...");
+    document.write("There was an error while loading the Google Maps scripts. Please try again later");
   };
   ref.parentNode.insertBefore(script, ref);
 }
