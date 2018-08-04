@@ -144,11 +144,12 @@ class App extends Component {
           }
           response.json().then(function (data) {
             var locData = data.response.venues[0];
+            var textDATA = '<b>DATA FROM FOURSQUARE</b><br>';
             var locName = '<b>Name: </b>' + locData.name + '<br>';
             var locAddress = '<b>Address: </b>' + locData.location.formattedAddress + '<br>';
             var locVerified = '<b>Is verified: </b>' + locData.verified + '<br>';
             var findMore = '<a href="https://foursquare.com/v/' + locData.id + '" target="_blank">Find more on Foursquare</a>'
-            self.state.infowindow.setContent(locName + locAddress + locVerified  + findMore);
+            self.state.infowindow.setContent(textDATA + locName + locAddress + locVerified  + findMore);
           });
         }
       )
