@@ -22,5 +22,6 @@ This application uses API's from Google maps and Foursquare, and developer free 
 
 ## How to run the project in Production Mode
 
-* Build the production ready optimised code: `npm run serve`
+* Build the production ready optimised code: `npm run build`
+* Run a local server with `serve -s build`
 * And then visit [http://localhost:5000/](http://localhost:5000/)
