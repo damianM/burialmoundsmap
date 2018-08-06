@@ -1,4 +1,5 @@
 import React from 'react';
+//import AllLocations from './AllLocations';
 
 class SingleLocation extends React.Component {
    
