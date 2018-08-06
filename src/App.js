@@ -35,20 +35,23 @@ class App extends Component {
           'type': "Monument",
           'latitude': 50.070231,
           'longitude': 20.0659003
-        }
+        },
       ],
       'map': '',
       'infoWindow': '',
-      'markerX': ''
+      'markerX': '',
+      'mapLoaded': true
     };
 
     this.initMap = this.initMap.bind(this);
     this.openInfoWindow = this.openInfoWindow.bind(this);
     this.closeInfoWindow = this.closeInfoWindow.bind(this);
+    this.gm_authFailure = this.gm_authFailure.bind(this);
   }
 
   componentDidMount() {
     window.initMap = this.initMap;
+
     loadMapJS('https://maps.googleapis.com/maps/api/js?key=AIzaSyAHg-9aLCKW1W_xTBi0W1Y3t-D6vVT2Kjc&callback=initMap')
     // Global function for Google map error handling
     window.gm_authFailure = this.gm_authFailure;
@@ -56,7 +59,10 @@ class App extends Component {
 
   // Global function for Google map error handling
   gm_authFailure() {
-  window.alert("Google Maps failed to Load"); 
+    this.setState({
+      'mapLoaded': false
+    });
+    window.alert("Google Maps failed to Load");
   }
 
   openInfoWindow(marker) {
@@ -74,30 +80,35 @@ class App extends Component {
 
   getMarkerInfo(marker) {
     var self = this;
-    var clientId = "OHNKTJQFJQ2GEYEKI1KLZUE3F3MVQCRUCP11BMB4WSABJEW0";
-    var clientSecret = "RZRDJKXKYBKIQJBH1OGDAKCXMOE1FVUGW2A4ZX52ICV44JWZ";
-    var url = "https://api.foursquare.com/v2/venues/search?client_id=" + clientId + "&client_secret=" + clientSecret + "&v=20180323&ll=" + marker.getPosition().lat() + "," + marker.getPosition().lng() + "&limit=1";
-    fetch(url)
-      .then(
-        function (response) {
-          if (response.status !== 200) {
-            self.state.infowindow.setContent("No data");
-            return;
+    if (self.state.mapLoaded === true) {
+      console.log(self.state.mapLoaded);
+      var clientId = "OHNKTJQFJQ2GEYEKI1KLZUE3F3MVQCRUCP11BMB4WSABJEW0";
+      var clientSecret = "RZRDJKXKYBKIQJBH1OGDAKCXMOE1FVUGW2A4ZX52ICV44JWZ";
+      var url = "https://api.foursquare.com/v2/venues/search?client_id=" + clientId + "&client_secret=" + clientSecret + "&v=20180323&ll=" + marker.getPosition().lat() + "," + marker.getPosition().lng() + "&limit=1";
+      fetch(url)
+        .then(
+          function (response) {
+            if (response.status !== 200) {
+              self.state.infowindow.setContent("No data");
+              return;
+            }
+            response.json().then(function (data) {
+              var locData = data.response.venues[0];
+              var textDATA = '<b>DATA FROM FOURSQUARE</b><br>';
+              var locName = '<b>Name: </b>' + locData.name + '<br>';
+              var locAddress = '<b>Address: </b>' + locData.location.formattedAddress + '<br>';
+              var locVerified = '<b>Is verified: </b>' + locData.verified + '<br>';
+              var findMore = '<a href="https://foursquare.com/v/' + locData.id + '" target="_blank">Find more on Foursquare</a>'
+              self.state.infowindow.setContent(textDATA + locName + locAddress + locVerified + findMore);
+            });
           }
-          response.json().then(function (data) {
-            var locData = data.response.venues[0];
-            var textDATA = '<b>DATA FROM FOURSQUARE</b><br>';
-            var locName = '<b>Name: </b>' + locData.name + '<br>';
-            var locAddress = '<b>Address: </b>' + locData.location.formattedAddress + '<br>';
-            var locVerified = '<b>Is verified: </b>' + locData.verified + '<br>';
-            var findMore = '<a href="https://foursquare.com/v/' + locData.id + '" target="_blank">Find more on Foursquare</a>'
-            self.state.infowindow.setContent(textDATA + locName + locAddress + locVerified + findMore);
-          });
-        }
-      )
-      .catch(function (err) {
-        self.state.infowindow.setContent("No data");
-      });
+        )
+        .catch(function (err) {
+          self.state.infowindow.setContent("No data");
+        });
+      } else {
+        window.alert("There was an error while loading the Google Maps scripts. Please try again later");
+      }
   }
 
   closeInfoWindow() {
